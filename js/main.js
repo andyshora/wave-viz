@@ -1,7 +1,7 @@
 var gridSize = 20; // will create gridSize ^ 2 points
-var pointSize = 30;
-var refreshInterval = 250;
-var propagationFraction = .8;
+var pointSize = 20;
+var refreshInterval = 200;
+var propagationFraction = .7;
 
 var pointMargin = 1;
 var points = [];
@@ -18,26 +18,15 @@ var Point = function(x, y) {
   return {
     x: x,
     y: y,
-    energy: 0, // 0-100
+    energy: 0, // 0-255
     addEnergy: function(energy) {
-      if (energy > 5) {
-
+      if (energy > 10) {
         if (energy > this.energy) {
-          this.energy += energy;
-          if (this.energy > 255) {
-            this.energy = 255;
-          }
-
-          if (this.energy > 20) {
-            this.sendEnergy();
-          }
-
+          this.energy = this.energy + energy > 255 ? 255 : this.energy + energy;
         }
-
       } else {
         this.energy = 0;
       }
-
     },
     sendEnergy: function() {
 
@@ -59,10 +48,15 @@ var Point = function(x, y) {
           var index = getPointIndex(n.x, n.y);
           // send a fraction of this points energy
           // to neighbouring points
-          var obj = { index: index, energy: this.energy * propagationFraction };
-          energyTransferQueue.push(obj);
+          var obj = { index: index, energy: this.energy - 20 };
+
+          if (points[index].energy < this.energy - 20) {
+            energyTransferQueue.push(obj);
+          }
         }
       }
+
+
 
 
     },
@@ -72,7 +66,11 @@ var Point = function(x, y) {
       context.fillStyle = 'rgb(' + Math.floor(255 - this.energy) + ',250,250)';
       context.fillRect((x * pointSize) + (x * pointMargin), (y * pointSize) + (y * pointMargin), pointSize, pointSize);
 
-      this.energy *= propagationFraction;
+      if (this.energy > 20) {
+        this.sendEnergy();
+      }
+
+      this.energy = this.energy - 20 < 0 ? 0 : this.energy - 20;
     }
   };
 };
@@ -120,7 +118,7 @@ function getPointIndex(x, y) {
 
 function onUpdateClicked() {
   var index = Math.floor(Math.random() * points.length);
-  energyTransferQueue.push({ index: index, energy: 255 });
+  energyTransferQueue.push({ index: index, energy: 180 });
 }
 
 // start raq loop
