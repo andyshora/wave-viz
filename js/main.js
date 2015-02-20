@@ -1,6 +1,6 @@
 var gridSize = 20; // will create gridSize ^ 2 points
 var pointSize = 30;
-var refreshInterval = 120;
+var refreshInterval = 250;
 var propagationFraction = .8;
 
 var pointMargin = 1;
@@ -19,7 +19,6 @@ var Point = function(x, y) {
     x: x,
     y: y,
     energy: 0, // 0-100
-    requiresRender: false,
     addEnergy: function(energy) {
       if (energy > 5) {
 
@@ -29,8 +28,6 @@ var Point = function(x, y) {
             this.energy = 255;
           }
 
-          this.requiresRender = true;
-
           if (this.energy > 20) {
             this.sendEnergy();
           }
@@ -39,7 +36,6 @@ var Point = function(x, y) {
 
       } else {
         this.energy = 0;
-        this.requiresRender = false;
       }
 
     },
@@ -116,7 +112,6 @@ function updatePoints() {
     }
   }
 
-
 }
 
 function getPointIndex(x, y) {
@@ -125,7 +120,7 @@ function getPointIndex(x, y) {
 
 function onUpdateClicked() {
   var index = Math.floor(Math.random() * points.length);
-  points[index].addEnergy(255);
+  energyTransferQueue.push({ index: index, energy: 255 });
 }
 
 // start raq loop
