@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background: black;
 }
 .update-button {
 	position: fixed;
@@ -11,4 +12,9 @@ body {
 	border: none;
 	color: white;
 	cursor: pointer;
+}
+canvas {
+  background: black;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
