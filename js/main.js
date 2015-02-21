@@ -1,12 +1,18 @@
-var gridSize = 20; // will create gridSize ^ 2 points
-var pointSize = 20;
-var refreshInterval = 200;
-var propagationFraction = .7;
+var gridSize = 12; // will create gridSize ^ 2 points
+var pointSize = 50;
+var refreshInterval = 60;
+var energyLossPerFrame = 10;
+var energyPropagationPerFrame = .8;
+var energyLostPerFrame = 10;
 
 var pointMargin = 1;
 var points = [];
 var energyTransferQueue = [];
 var t0 = +new Date();
+
+// RAF
+var start = null;
+var fps = 10;
 
 var canvas = document.getElementById('canvas');
 canvas.width = canvas.height = (gridSize * pointSize) + (gridSize-1 * pointMargin);
@@ -18,15 +24,24 @@ var Point = function(x, y) {
   return {
     x: x,
     y: y,
-    energy: 0, // 0-255
+    increased: false,
+    energy: 0, // 0-100
     addEnergy: function(energy) {
-      if (energy > 10) {
-        if (energy > this.energy) {
-          this.energy = this.energy + energy > 255 ? 255 : this.energy + energy;
-        }
+
+      if (energy > 0) {
+        this.increased = true;
       } else {
-        this.energy = 0;
+        this.increased = false;
       }
+
+      var tempEnergy = this.energy + energy;
+      if (tempEnergy > 100) {
+        tempEnergy = 100;
+      } else if (tempEnergy < 0) {
+        tempEnergy = 0;
+      }
+      this.energy = tempEnergy;
+      // console.log('this.energy', this.energy);
     },
     sendEnergy: function() {
 
@@ -46,31 +61,48 @@ var Point = function(x, y) {
         var n = neighbours[i];
         if ((n.x >= 0) && (n.x < gridSize) && (n.y >= 0) && (n.y < gridSize)) {
           var index = getPointIndex(n.x, n.y);
-          // send a fraction of this points energy
+          // add a fraction of this points energy
           // to neighbouring points
-          var obj = { index: index, energy: this.energy - 20 };
-
-          if (points[index].energy < this.energy - 20) {
+          var obj = { index: index, energy: Math.round(this.energy * energyPropagationPerFrame) };
+          if (points[index].energy < Math.round(this.energy * energyPropagationPerFrame)) {
             energyTransferQueue.push(obj);
           }
         }
       }
 
-
-
-
     },
     render: function(t) {
+
       context.beginPath();
 
-      context.fillStyle = 'rgb(' + Math.floor(255 - this.energy) + ',250,250)';
-      context.fillRect((x * pointSize) + (x * pointMargin), (y * pointSize) + (y * pointMargin), pointSize, pointSize);
+      var depressedPerc = 1 - (this.energy / 100); // todo - this should be based on sin(t)
+      var customPointpointSize = pointSize * depressedPerc;
 
-      if (this.energy > 20) {
-        this.sendEnergy();
+      if (customPointpointSize < pointSize / 2) {
+        customPointpointSize = pointSize / 2;
+      }
+      var extraMargin = (pointSize - customPointpointSize) / 2;
+
+      // context.fillStyle = 'rgb(255,' + Math.floor(255 - this.energy) + ',' + Math.floor(255 - this.energy) + ')';
+      context.fillStyle = 'red';
+      context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
+
+      if (this.energy > 10) {
+
+        if (this.increased) {
+          this.sendEnergy();
+        }
+        
+        // only send energy if it has increased
       }
 
-      this.energy = this.energy - 20 < 0 ? 0 : this.energy - 20;
+      // console.log('this.energy', this.energy);
+
+      // decrease the energy of this point
+      // this.energy = Math.round(this.energy * energyPropagationPerFrame + .05) < 0 ? 0 : Math.round(this.energy * energyPropagationPerFrame + .05);
+      var index = getPointIndex(this.x, this.y);
+      var obj = { index: index, energy: -energyLostPerFrame };
+      energyTransferQueue.push(obj);
     }
   };
 };
@@ -85,7 +117,7 @@ for (var y = 0; y < gridSize; y++) {
   }
 }
 
-var interval = setInterval(updatePoints, refreshInterval);
+// var interval = setInterval(updatePoints, refreshInterval);
 
 function transferScheduledEnergy() {
 
@@ -96,17 +128,23 @@ function transferScheduledEnergy() {
 
 }
 
-function updatePoints() {
+function clearCanvas() {
+  context.clearRect (0, 0, canvas.width, canvas.height);
+}
+
+function updatePoints(progress) {
+
+  clearCanvas();
 
   // update points
   transferScheduledEnergy();
 
-  var t = +new Date();
+  // var t = +new Date();
 
   for (var y = 0; y < gridSize; y++) {
     for (var x = 0; x < gridSize; x++) {
       var index = getPointIndex(x, y);
-      points[index].render(t);
+      points[index].render(progress);
     }
   }
 
@@ -118,7 +156,27 @@ function getPointIndex(x, y) {
 
 function onUpdateClicked() {
   var index = Math.floor(Math.random() * points.length);
-  energyTransferQueue.push({ index: index, energy: 180 });
+  energyTransferQueue.push({ index: index, energy: 100 });
 }
 
-// start raq loop
+// start FAF loop
+
+function step(timestamp) {
+
+  if (!start) {
+    start = +new Date();
+  }
+
+  setTimeout(function() {
+
+    var progress = timestamp - start;
+    updatePoints(progress);
+
+    if (progress < 5000) {
+      window.requestAnimationFrame(step);
+    }
+    }, 1000 / fps);
+}
+
+start = +new Date();
+window.requestAnimationFrame(step);
