@@ -1,9 +1,8 @@
 var gridSize = 12; // will create gridSize ^ 2 points
 var pointSize = 50;
 var refreshInterval = 60;
-var energyLossPerFrame = 10;
 var energyPropagationPerFrame = .8;
-var energyLostPerFrame = 10;
+var energyLostPerFrame = 5;
 
 var pointMargin = 1;
 var points = [];
@@ -12,7 +11,7 @@ var t0 = +new Date();
 
 // RAF
 var start = null;
-var fps = 10;
+var fps = 30;
 
 var canvas = document.getElementById('canvas');
 canvas.width = canvas.height = (gridSize * pointSize) + (gridSize-1 * pointMargin);
@@ -24,14 +23,16 @@ var Point = function(x, y) {
   return {
     x: x,
     y: y,
-    increased: false,
+    increased: 0,
     energy: 0, // 0-100
     addEnergy: function(energy) {
 
       if (energy > 0) {
-        this.increased = true;
+        this.increased = 1;
+      } else if (energy < 0) {
+        this.increased = -1;
       } else {
-        this.increased = false;
+        this.increased = 0;
       }
 
       var tempEnergy = this.energy + energy;
@@ -63,6 +64,7 @@ var Point = function(x, y) {
           var index = getPointIndex(n.x, n.y);
           // add a fraction of this points energy
           // to neighbouring points
+          // console.log('index', index, points);
           var obj = { index: index, energy: Math.round(this.energy * energyPropagationPerFrame) };
           if (points[index].energy < Math.round(this.energy * energyPropagationPerFrame)) {
             energyTransferQueue.push(obj);
@@ -72,6 +74,8 @@ var Point = function(x, y) {
 
     },
     render: function(t) {
+
+
 
       context.beginPath();
 
@@ -87,14 +91,17 @@ var Point = function(x, y) {
       context.fillStyle = 'red';
       context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
 
-      if (this.energy > 10) {
-
-        if (this.increased) {
-          this.sendEnergy();
-        }
-        
-        // only send energy if it has increased
+      if (!this.energy) {
+        return;
       }
+
+      if (this.increased === 1) {
+        this.sendEnergy();
+      }
+      this.increased = 0;
+
+      // this.sendEnergy();
+        
 
       // console.log('this.energy', this.energy);
 
@@ -175,7 +182,7 @@ function step(timestamp) {
     if (progress < 5000) {
       window.requestAnimationFrame(step);
     }
-    }, 1000 / fps);
+  }, 1000 / fps);
 }
 
 start = +new Date();

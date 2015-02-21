@@ -2,3 +2,13 @@ body {
   margin: 0;
   padding: 0;
 }
+.update-button {
+	position: fixed;
+	top: 0;
+	right: 0;
+	background: black;
+	padding: 15px 20px;
+	border: none;
+	color: white;
+	cursor: pointer;
+}
