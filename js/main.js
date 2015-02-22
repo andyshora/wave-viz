@@ -1,9 +1,9 @@
 var gridSize = 100; // will create gridSize ^ 2 points
 
-var gridWidth = 50;
-var gridHeight = 50;
+var gridWidth = 100;
+var gridHeight = 100;
 
-var pointSize = 10;
+var pointSize = 6;
 var energyPropagationPerFrame = .40;
 var energyLostPerFrame = 5; // smaller = longer energy trail
 var pointMargin = 1;
@@ -17,8 +17,10 @@ var start = null;
 var fps = 60;
 
 var canvas = document.getElementById('canvas');
-canvas.width = (gridWidth * pointSize) + (gridWidth-1 * pointMargin);
-canvas.height = (gridHeight * pointSize) + (gridHeight-1 * pointMargin);
+var canvasWidth = canvas.width = (gridWidth * pointSize) + (gridWidth-1 * pointMargin);
+var canvasHeight = canvas.height = (gridHeight * pointSize) + (gridHeight-1 * pointMargin);
+
+
 var context = canvas.getContext('2d');
 
 
@@ -120,8 +122,7 @@ var Point = function(x, y) {
       // decrease the energy of this point
       // this.energy = Math.round(this.energy * energyPropagationPerFrame + .05) < 0 ? 0 : Math.round(this.energy * energyPropagationPerFrame + .05);
       var index = getPointIndex(this.x, this.y);
-      var obj = { index: index, energy: -energyLostPerFrame };
-      energyTransferQueue.push(obj);
+      energyTransferQueue.push({ index: index, energy: -energyLostPerFrame });
     }
   };
 };
@@ -136,46 +137,38 @@ for (var y = 0; y < gridHeight; y++) {
   }
 }
 
-// var interval = setInterval(updatePoints, refreshInterval);
-
 function transferScheduledEnergy() {
 
-  if (!points.length) {
-    console.error('No points defined');
-    return;
+  var len = energyTransferQueue.length;
+
+  // avoid expensive shift operation
+  for (var i = 0; i < len; i++) {
+    points[energyTransferQueue[i].index].addEnergy(energyTransferQueue[i].energy);
   }
 
-  while (data = energyTransferQueue.shift()) {
-    var index = data.index;
-    points[index].addEnergy(data.energy);
-    
-  }
+  energyTransferQueue = [];
 
 }
 
 function clearCanvas() {
-  context.clearRect (0, 0, canvas.width, canvas.height);
+  context.clearRect (0, 0, canvasWidth, canvasHeight);
 }
 
-function updatePoints(progress) {
+function updatePoints() {
 
   clearCanvas();
 
   // update points
-  if (energyTransferQueue.length) {
-    transferScheduledEnergy();
+  
+  transferScheduledEnergy();
 
-    // todo - speed this up
-    for (var y = 0; y < gridHeight; y++) {
-      for (var x = 0; x < gridWidth; x++) {
-        var index = getPointIndex(x, y);
-        points[index].render(progress);
-        
-      }
+  // todo - speed this up
+  for (var y = 0; y < gridHeight; y++) {
+    for (var x = 0; x < gridWidth; x++) {
+      var index = (y * gridHeight) + x;
+      points[index].render();
     }
   }
-
-  
 
 }
 
@@ -193,26 +186,10 @@ function onUpdateClicked() {
 var a = false;
 
 function step(timestamp) {
-
-  if (!start) {
-    start = +new Date();
+  if (energyTransferQueue.length) {
+    updatePoints();
   }
-
-  var progress = timestamp - start;
-
-  if (a) {
-    updatePoints(progress);
-    
-  }
-
-
-
-  a = !a;
   window.requestAnimationFrame(step);
- 
-
-
-
 }
 
 function getTapPosition(event) {
