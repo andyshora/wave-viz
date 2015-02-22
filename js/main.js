@@ -96,25 +96,25 @@ var Point = function(x, y) {
     render: function() {
 
       // this.requiresRender = false;
+      if (!this.energy) {
+        return;
+      }
 
       context.beginPath();
 
       var depressedPerc = 1 - (this.energy / 100); // todo - this should be based on sin(t)
       var customPointpointSize = pointSize * depressedPerc;
-
-      var fract = this.energy / 100;
+      var fract = Math.sin(this.energy / 50);
 
       if (customPointpointSize < pointSize * fract) {
         customPointpointSize = pointSize * fract;
       }
       var extraMargin = (pointSize - customPointpointSize) / 2;
 
-      context.fillStyle = getColor(this.energy);
+      context.fillStyle = this.energy > 30 ? 'red' : 'black';
       context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
 
-      if (!this.energy) {
-        return;
-      }
+      
 
       if (this.increased === 1) {
         this.sendEnergy();
@@ -128,9 +128,11 @@ var Point = function(x, y) {
 
       // decrease the energy of this point
       // this.energy = Math.round(this.energy * energyPropagationPerFrame + .05) < 0 ? 0 : Math.round(this.energy * energyPropagationPerFrame + .05);
-      var index = getPointIndex(this.x, this.y);
-      energyTransferQueue.push({ index: index, energy: -energyLostPerFrame });
+      energyTransferQueue.push({ index: (this.y * gridHeight) + this.x, energy: -energyLostPerFrame });
       energyTransferRequired = true;
+
+      // cleanup
+      // depressedPerc = customPointpointSize = extraMargin = null;
     }
   };
 };
