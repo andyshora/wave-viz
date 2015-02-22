@@ -95,7 +95,8 @@ var Point = function(x, y) {
     },
     render: function() {
 
-      // this.requiresRender = false;
+      // hude perf gain
+      // no energy? dont bother rendering
       if (!this.energy) {
         return;
       }
@@ -111,11 +112,10 @@ var Point = function(x, y) {
       }
       var extraMargin = (pointSize - customPointpointSize) / 2;
 
-      context.fillStyle = this.energy > 30 ? 'red' : 'black';
+      context.fillStyle = getColor(this.energy);
       context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
 
       
-
       if (this.increased === 1) {
         this.sendEnergy();
       }
@@ -230,15 +230,11 @@ function getPointTapped(x, y) {
 
 function getColor(energy) {
 
-  return energy > 30 ? 'red' : 'black';
-
+  // return energy > 30 ? 'red' : 'black';
   var spark = false;//Math.random() > .95;
-
   var r = Math.floor(energy * 2.55);
-  // var g = Math.floor(energy * 2.55);
-  // var b = Math.floor(energy * 2.55);
-
-  // return 'rgb(' + r + ',' + r + ',' + r + ')';
+  
+  return 'rgb(' + r + ',0,0)';
 
 }
 
