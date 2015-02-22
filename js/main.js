@@ -209,7 +209,7 @@ function step(timestamp) {
 function onCanvasTapped(event) {
 
   if (event.changedTouches) {
-    var touches = evt.changedTouches;
+    var touches = event.changedTouches;
             
     for (var i=0; i < touches.length; i++) {
       context.beginPath();
