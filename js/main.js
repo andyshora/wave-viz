@@ -208,7 +208,7 @@ function step(timestamp) {
 
 function drawTapMarker(x, y) {
   context.beginPath();
-  context.arc(x, y, 10, 0, 2 * Math.PI, false);
+  context.arc(x, y, 20, 0, 10 * Math.PI, false);
   context.fillStyle = 'white';
   context.fill();
 }
