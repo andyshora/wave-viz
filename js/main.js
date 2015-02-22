@@ -30,7 +30,7 @@ var Point = function(x, y) {
     x: x,
     y: y,
     increased: 0,
-    requiresRender: false,
+    // requiresRender: false,
     energy: 0, // 0-100
     addEnergy: function(energy) {
 
@@ -52,7 +52,7 @@ var Point = function(x, y) {
       }
 
       this.energy = tempEnergy < 10 ? 0 : tempEnergy;
-      this.requiresRender = true;
+      // this.requiresRender = true;
 
     },
     sendEnergy: function() {
@@ -72,7 +72,7 @@ var Point = function(x, y) {
       for (var i = 0; i < neighbours.length; i++) {
         var n = neighbours[i];
         if ((n.x >= 0) && (n.x < gridWidth) && (n.y >= 0) && (n.y < gridHeight)) {
-          var index = getPointIndex(n.x, n.y);
+          var index = (n.y * gridHeight) + n.x;
           // add a fraction of this points energy
           // to neighbouring points
           // console.log('index', index, points);
@@ -85,9 +85,9 @@ var Point = function(x, y) {
       }
 
     },
-    render: function(t) {
+    render: function() {
 
-      this.requiresRender = false;
+      // this.requiresRender = false;
 
       context.beginPath();
 
@@ -102,7 +102,6 @@ var Point = function(x, y) {
       var extraMargin = (pointSize - customPointpointSize) / 2;
 
       context.fillStyle = getColor(this.energy);
-      // context.fillStyle = 'rgb(255,0,0)';
       context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
 
       if (!this.energy) {
