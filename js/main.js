@@ -3,7 +3,7 @@ var gridSize = 100; // will create gridSize ^ 2 points
 var gridWidth = 100;
 var gridHeight = 100;
 
-var pointSize = 6;
+var pointSize = 10;
 var energyPropagationPerFrame = .40;
 var energyLostPerFrame = 5; // smaller = longer energy trail
 var pointMargin = 1;
@@ -217,6 +217,8 @@ function onCanvasTapped(event) {
 
   if (event.changedTouches) {
     var touches = event.changedTouches;
+
+    var lastIndex = -1;
             
     for (var i=0; i < touches.length; i++) {
       var x = touches[i].pageX;
@@ -228,6 +230,10 @@ function onCanvasTapped(event) {
       drawTapMarker(x, y);
 
       var index = getPointTapped(x, y);
+      if (index === lastIndex) {
+        continue;
+      }
+      lastIndex = index;
 
       if (index >= 0) {
         energyTransferQueue.push({ index: index, energy: 100 });
