@@ -206,19 +206,32 @@ function step(timestamp) {
   window.requestAnimationFrame(step);
 }
 
-function getTapPosition(event) {
-  var x = event.x;
-  var y = event.y;
+function onCanvasTapped(event) {
 
-  x -= canvas.offsetLeft;
-  y -= canvas.offsetTop;
+  if (event.changedTouches) {
+    var touches = evt.changedTouches;
+            
+    for (var i=0; i < touches.length; i++) {
+      context.beginPath();
+      context.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
+      context.fillStyle = color;
+      context.fill();
+    }
+  } else {
+    var x = event.x;
+    var y = event.y;
 
-  var index = getPointTapped(x, y);
+    x -= canvas.offsetLeft;
+    y -= canvas.offsetTop;
 
-  if (index >= 0) {
-    energyTransferQueue.push({ index: index, energy: 100 });
-    energyTransferRequired = true;
+    var index = getPointTapped(x, y);
+
+    if (index >= 0) {
+      energyTransferQueue.push({ index: index, energy: 100 });
+      energyTransferRequired = true;
+    }
   }
+  
 }
 
 function getPointTapped(x, y) {
@@ -233,13 +246,13 @@ function getColor(energy) {
   // return energy > 30 ? 'red' : 'black';
   var spark = false;//Math.random() > .95;
   var r = Math.floor(energy * 2.55);
-  
+
   return 'rgb(' + r + ',0,0)';
 
 }
 
-canvas.addEventListener('touchstart', getTapPosition, false);
-canvas.addEventListener('mousedown', getTapPosition, false);
+canvas.addEventListener('touchstart', onCanvasTapped, false);
+canvas.addEventListener('mousedown', onCanvasTapped, false);
 
 start = +new Date();
 window.requestAnimationFrame(step);
