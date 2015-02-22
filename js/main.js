@@ -214,7 +214,7 @@ function onCanvasTapped(event) {
     for (var i=0; i < touches.length; i++) {
       context.beginPath();
       context.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
-      context.fillStyle = color;
+      context.fillStyle = 'white';
       context.fill();
     }
   } else {
