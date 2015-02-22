@@ -57,6 +57,11 @@ var Point = function(x, y) {
     },
     sendEnergy: function() {
 
+      var energyToSend = Math.round(this.energy * energyPropagationPerFrame);
+      if (energyToSend < 5) {
+        return;
+      }
+
       var neighbours = [];
       neighbours.push({ x: this.x + 1, y: this.y + 1 });
       neighbours.push({ x: this.x + 1, y: this.y });
@@ -76,10 +81,13 @@ var Point = function(x, y) {
           // add a fraction of this points energy
           // to neighbouring points
           // console.log('index', index, points);
-          var obj = { index: index, energy: Math.round(this.energy * energyPropagationPerFrame) };
+          var obj = { index: index, energy: energyToSend };
           // if (points[index].energy < Math.round(this.energy * energyPropagationPerFrame)) {
           if (points[index].energy < 5) {  
             energyTransferQueue.push(obj);
+            if (!energyTransferRequired) {
+              energyTransferRequired = true;
+            }
           }
         }
       }
@@ -122,6 +130,7 @@ var Point = function(x, y) {
       // this.energy = Math.round(this.energy * energyPropagationPerFrame + .05) < 0 ? 0 : Math.round(this.energy * energyPropagationPerFrame + .05);
       var index = getPointIndex(this.x, this.y);
       energyTransferQueue.push({ index: index, energy: -energyLostPerFrame });
+      energyTransferRequired = true;
     }
   };
 };
@@ -139,6 +148,7 @@ for (var y = 0; y < gridHeight; y++) {
 function transferScheduledEnergy() {
 
   var len = energyTransferQueue.length;
+  energyTransferRequired = false;
 
   // avoid expensive shift operation
   for (var i = 0; i < len; i++) {
@@ -178,16 +188,19 @@ function getPointIndex(x, y) {
 function onUpdateClicked() {
   var index = Math.floor(Math.random() * points.length);
   energyTransferQueue.push({ index: index, energy: 100 });
+  energyTransferRequired = true;
 }
 
 // start FAF loop
-
-var a = false;
+var last = 0;
+var energyTransferRequired = false;
 
 function step(timestamp) {
-  if (energyTransferQueue.length) {
+
+  if (energyTransferRequired) {
     updatePoints();
   }
+
   window.requestAnimationFrame(step);
 }
 
@@ -202,7 +215,7 @@ function getTapPosition(event) {
 
   if (index >= 0) {
     energyTransferQueue.push({ index: index, energy: 100 });
-    
+    energyTransferRequired = true;
   }
 }
 
@@ -215,13 +228,15 @@ function getPointTapped(x, y) {
 
 function getColor(energy) {
 
-  var spark = Math.random() > .95;
+  return energy > 30 ? 'red' : 'black';
+
+  var spark = false;//Math.random() > .95;
 
   var r = Math.floor(energy * 2.55);
-  var g = spark ? Math.floor(energy * 2.55) : 0;
-  var b = spark ? Math.floor(energy * 2.55) : 0;
+  // var g = Math.floor(energy * 2.55);
+  // var b = Math.floor(energy * 2.55);
 
-  return 'rgb(' + r + ',' + g + ',' + b + ')';
+  // return 'rgb(' + r + ',' + r + ',' + r + ')';
 
 }
 
