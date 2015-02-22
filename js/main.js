@@ -206,16 +206,34 @@ function step(timestamp) {
   window.requestAnimationFrame(step);
 }
 
+function drawTapMarker(x, y) {
+  context.beginPath();
+  context.arc(x, y, 10, 0, 2 * Math.PI, false);
+  context.fillStyle = 'white';
+  context.fill();
+}
+
 function onCanvasTapped(event) {
 
   if (event.changedTouches) {
     var touches = event.changedTouches;
             
     for (var i=0; i < touches.length; i++) {
-      context.beginPath();
-      context.arc(touches[i].pageX, touches[i].pageY, 4, 0, 2 * Math.PI, false);  // a circle at the start
-      context.fillStyle = 'white';
-      context.fill();
+      var x = touches[i].pageX;
+      var y = touches[i].pageY;
+
+      x -= canvas.offsetLeft;
+      y -= canvas.offsetTop;
+
+      drawTapMarker(x, y);
+
+      var index = getPointTapped(x, y);
+
+      if (index >= 0) {
+        energyTransferQueue.push({ index: index, energy: 100 });
+        energyTransferRequired = true;
+      }
+
     }
   } else {
     var x = event.x;
