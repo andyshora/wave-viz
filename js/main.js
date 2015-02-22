@@ -140,6 +140,11 @@ for (var y = 0; y < gridHeight; y++) {
 
 function transferScheduledEnergy() {
 
+  if (!points.length) {
+    console.error('No points defined');
+    return;
+  }
+
   while (data = energyTransferQueue.shift()) {
     var index = data.index;
     points[index].addEnergy(data.energy);
@@ -156,19 +161,21 @@ function updatePoints(progress) {
 
   clearCanvas();
 
-  
-
   // update points
-  transferScheduledEnergy();
+  if (energyTransferQueue.length) {
+    transferScheduledEnergy();
 
-  // todo - speed this up
-  for (var y = 0; y < gridHeight; y++) {
-    for (var x = 0; x < gridWidth; x++) {
-      var index = getPointIndex(x, y);
-      points[index].render(progress);
-      
+    // todo - speed this up
+    for (var y = 0; y < gridHeight; y++) {
+      for (var x = 0; x < gridWidth; x++) {
+        var index = getPointIndex(x, y);
+        points[index].render(progress);
+        
+      }
     }
   }
+
+  
 
 }
 
@@ -209,7 +216,6 @@ function step(timestamp) {
 }
 
 function getTapPosition(event) {
-  // console.log('getTapPosition');
   var x = event.x;
   var y = event.y;
 
@@ -217,14 +223,18 @@ function getTapPosition(event) {
   y -= canvas.offsetTop;
 
   var index = getPointTapped(x, y);
-  energyTransferQueue.push({ index: index, energy: 100 });
+
+  if (index >= 0) {
+    energyTransferQueue.push({ index: index, energy: 100 });
+    
+  }
 }
 
 function getPointTapped(x, y) {
   var x2 = Math.floor(x / (pointSize + pointMargin));
   var y2 = Math.floor(y / (pointSize + pointMargin));
 
-  return getPointIndex(x2, y2);
+  return (typeof x2 === 'number') ? getPointIndex(x2, y2) : -1;
 }
 
 function getColor(energy) {
