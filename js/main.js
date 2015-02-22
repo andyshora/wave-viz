@@ -1,11 +1,11 @@
 var gridSize = 100; // will create gridSize ^ 2 points
 
-var gridWidth = 80;
-var gridHeight = 80;
+var gridWidth = 120;
+var gridHeight = 120;
 
-var pointSize = 10;
-var energyPropagationPerFrame = .4;
-var energyLostPerFrame = 10;
+var pointSize = 5;
+var energyPropagationPerFrame = .40;
+var energyLostPerFrame = 5; // smaller = longer energy trail
 var pointMargin = 1;
 
 var points = [];
@@ -76,7 +76,7 @@ var Point = function(x, y) {
           // console.log('index', index, points);
           var obj = { index: index, energy: Math.round(this.energy * energyPropagationPerFrame) };
           // if (points[index].energy < Math.round(this.energy * energyPropagationPerFrame)) {
-          if (!points[index].energy) {  
+          if (points[index].energy < 5) {  
             energyTransferQueue.push(obj);
           }
         }
@@ -92,8 +92,10 @@ var Point = function(x, y) {
       var depressedPerc = 1 - (this.energy / 100); // todo - this should be based on sin(t)
       var customPointpointSize = pointSize * depressedPerc;
 
-      if (customPointpointSize < pointSize * .8) {
-        customPointpointSize = pointSize * .8;
+      var fract = this.energy / 100;
+
+      if (customPointpointSize < pointSize * fract) {
+        customPointpointSize = pointSize * fract;
       }
       var extraMargin = (pointSize - customPointpointSize) / 2;
 
@@ -141,6 +143,7 @@ function transferScheduledEnergy() {
   while (data = energyTransferQueue.shift()) {
     var index = data.index;
     points[index].addEnergy(data.energy);
+    
   }
 
 }
@@ -226,7 +229,7 @@ function getPointTapped(x, y) {
 
 function getColor(energy) {
 
-  var spark = Math.random() > .9;
+  var spark = Math.random() > .95;
 
   var r = Math.floor(energy * 2.55);
   var g = spark ? Math.floor(energy * 2.55) : 0;
