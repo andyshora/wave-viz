@@ -83,7 +83,7 @@ var Point = function(x, y) {
           // console.log('index', index, points);
           var obj = { index: index, energy: energyToSend };
           // if (points[index].energy < Math.round(this.energy * energyPropagationPerFrame)) {
-          if (points[index].energy < 5) {  
+          if (points[index].energy < 5) {
             energyTransferQueue.push(obj);
             if (!energyTransferRequired) {
               energyTransferRequired = true;
@@ -115,14 +115,14 @@ var Point = function(x, y) {
       context.fillStyle = getColor(this.energy);
       context.fillRect((x * pointSize) + (x * pointMargin) + extraMargin, (y * pointSize) + (y * pointMargin) + extraMargin, customPointpointSize, customPointpointSize);
 
-      
+
       if (this.increased === 1) {
         this.sendEnergy();
       }
       this.increased = 0;
 
       // this.sendEnergy();
-        
+
 
       // console.log('this.energy', this.energy);
 
@@ -170,7 +170,7 @@ function updatePoints() {
   clearCanvas();
 
   // update points
-  
+
   transferScheduledEnergy();
 
   // todo - speed this up
@@ -219,7 +219,7 @@ function onCanvasTapped(event) {
     var touches = event.changedTouches;
 
     var lastIndex = -1;
-            
+
     for (var i=0; i < touches.length; i++) {
       var x = touches[i].pageX;
       var y = touches[i].pageY;
@@ -255,7 +255,7 @@ function onCanvasTapped(event) {
       energyTransferRequired = true;
     }
   }
-  
+
 }
 
 function getPointTapped(x, y) {
@@ -280,3 +280,5 @@ canvas.addEventListener('mousedown', onCanvasTapped, false);
 
 start = +new Date();
 window.requestAnimationFrame(step);
+
+onUpdateClicked();
