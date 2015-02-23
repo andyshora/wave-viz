@@ -188,6 +188,10 @@ function getPointIndex(x, y) {
 }
 
 function onUpdateClicked() {
+  sendRandomWave();
+}
+
+function sendRandomWave() {
   var index = Math.floor(Math.random() * points.length);
   energyTransferQueue.push({ index: index, energy: 100 });
   energyTransferRequired = true;
@@ -275,10 +279,22 @@ function getColor(energy) {
 
 }
 
+// init pusher for remote controls to work
+initConnections();
+
 canvas.addEventListener('touchstart', onCanvasTapped, false);
 canvas.addEventListener('mousedown', onCanvasTapped, false);
 
 start = +new Date();
 window.requestAnimationFrame(step);
 
-onUpdateClicked();
+
+
+function initConnections() {
+
+  var socket = io('http://localhost:8081');
+  socket.on('trigger_wave', function (data) {
+    console.log('trigger_wave', data);
+    sendRandomWave();
+  });
+}
