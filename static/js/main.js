@@ -293,8 +293,8 @@ window.requestAnimationFrame(step);
 function initConnections() {
 
   var socket = io('http://localhost:8081');
-  socket.on('trigger_wave', function (data) {
-    console.log('trigger_wave', data);
+  socket.on('game:trigger-wave', function (data) {
+    console.log('game:trigger-wave', data);
     sendRandomWave();
   });
 }
