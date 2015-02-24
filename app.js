@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
 
 var connectedCount = 0;
 
@@ -10,7 +10,7 @@ app.set('port', (process.env.PORT || 3000));
 
 app.use('/', express.static(__dirname + '/static', { maxAge: 86400 }));
 
-io.on('connection', function (socket) {
+/*io.on('connection', function (socket) {
   connectedCount++;
   console.log('connectedCount', connectedCount);
   socket.emit('room:count', { count: connectedCount });
@@ -27,7 +27,7 @@ io.on('connection', function (socket) {
     socket.emit('room:count', { count: connectedCount });
   });
 
-});
+});*/
 
 
 app.listen(app.get('port'));
