@@ -288,11 +288,11 @@ canvas.addEventListener('mousedown', onCanvasTapped, false);
 start = +new Date();
 window.requestAnimationFrame(step);
 
-
+var domain = /shora/ig.test(window.locatioh.href) ? 'http://waves.shora.net' : 'http://localhost:8081';
 
 function initConnections() {
 
-  var socket = io('http://localhost:8081');
+  var socket = io(domain);
   socket.on('game:trigger-wave', function (data) {
     console.log('game:trigger-wave', data);
     sendRandomWave();

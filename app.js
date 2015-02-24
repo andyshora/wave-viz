@@ -30,5 +30,5 @@ io.on('connection', function (socket) {
 });
 
 
-server.listen(app.get('port'));
+app.listen(app.get('port'));
 console.log('Listening on port %s', app.get('port'));
