@@ -1,5 +1,5 @@
 
-var domain = /shora/ig.test(window.locatioh.href) ? 'http://waves.shora.net' : 'http://localhost:8081';
+var domain = /shora/ig.test(window.location.href) ? 'http://waves.shora.net' : 'http://localhost:8081';
 
 var socket = io(domain);
 
