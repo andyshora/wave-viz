@@ -6,7 +6,7 @@ var io = require('socket.io')(server);
 var connectedCount = 0;
 
 // app settings
-app.set('port', process.env.PORT || 8081);
+app.set('port', (process.env.PORT || 3000));
 
 app.use('/', express.static(__dirname + '/static', { maxAge: 86400 }));
 
