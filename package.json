@@ -1,7 +1,17 @@
 {
-  "repository": "",
+  "name": "tca-mvp",
+  "version": "0.0.1",
+  "description": "Waves Game",
+  "main": "app.js",
+  "engines": {
+    "node": "0.10.31"
+  },
   "dependencies": {
     "express": "~4.12.0",
     "socket.io": "^1.3.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andyshora/waves-viz.git"
   }
 }
