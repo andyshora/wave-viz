@@ -11,7 +11,7 @@ app.set('port', (process.env.PORT || 3000));
 server.listen((process.env.PORT || 3000), "127.0.0.1");
 
 // app settings
-app.set('port', (process.env.PORT || 3000));
+// app.set('port', (process.env.PORT || 3000));
 
 app.use('/', express.static(__dirname + '/static', { maxAge: 86400 }));
 
