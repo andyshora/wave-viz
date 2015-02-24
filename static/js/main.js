@@ -288,7 +288,7 @@ canvas.addEventListener('mousedown', onCanvasTapped, false);
 start = +new Date();
 window.requestAnimationFrame(step);
 
-var domain = /shora/ig.test(window.location.href) ? window.location.hostname : 'http://localhost';
+var domain = /shora/ig.test(window.location.href) ? window.location.hostname : 'http://localhost/';
 console.log('domain', domain);
 
 function initConnections() {
