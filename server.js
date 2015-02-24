@@ -29,5 +29,5 @@ io.on('connection', function (socket) {
 
 });
 
-app.listen(app.get('port'));
-console.log('Listening on port %s', app.get('port'));
+app.listen((process.env.PORT || 3000));
+console.log('Listening on port %s', (process.env.PORT || 3000));
