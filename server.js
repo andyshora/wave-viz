@@ -6,12 +6,12 @@ var io = require('socket.io')(server);
 var connectedCount = 0;
 
 app.set('ipaddr', '127.0.0.1');
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 8082));
 
 
 
 // app settings
-// app.set('port', (process.env.PORT || 5000));
+// app.set('port', (process.env.PORT || 8082));
 
 app.use('/', express.static(__dirname + '/static', { maxAge: 86400 }));
 
@@ -35,5 +35,5 @@ io.on('connection', function (socket) {
 });
 
 server.listen(app.get('port'), '127.0.0.1');
-// app.listen(process.env.PORT || 5000);
-console.log('Listening on port %s', process.env.PORT || 5000);
+// app.listen(process.env.PORT || 8082);
+console.log('Listening on port %s', process.env.PORT || 8082);
