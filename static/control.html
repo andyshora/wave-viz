@@ -11,10 +11,10 @@
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <button class="control-button control-button--up" ontouchstart="movePlayer(0,-1)">Up</button>
-  <button class="control-button control-button--left" ontouchstart="movePlayer(-1,0)">Left</button>
-  <button class="control-button control-button--right" ontouchstart="movePlayer(1,0)">Right</button>
-  <button class="control-button control-button--down" ontouchstart="movePlayer(0,1)">Down</button>
+  <button class="control-button control-button--up" onmousedown="movePlayer(0,-1)" ontouchstart="movePlayer(0,-1)">Up</button>
+  <button class="control-button control-button--left" onmousedown="movePlayer(-1,0)" ontouchstart="movePlayer(-1,0)">Left</button>
+  <button class="control-button control-button--right" onmousedown="movePlayer(1,0)" ontouchstart="movePlayer(1,0)">Right</button>
+  <button class="control-button control-button--down" onmousedown="movePlayer(0,1)" ontouchstart="movePlayer(0,1)">Down</button>
   <script src="js/config.js"></script>
   <script src="js/control.js"></script>
 </body>

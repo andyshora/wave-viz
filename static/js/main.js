@@ -200,28 +200,49 @@ function sendRandomWave() {
 // start RAF loop
 var last = 0;
 var energyTransferRequired = false;
-var playerPositionChanged = false;
+var playerPositionChanged = true;
 
 var players = [];
-players[0] = { x: 0, y: 0 };
+players[0] = { name: 'sam', x: 0, y: 0 };
+
+var player1Img = new Image();
+player1Img.src = '/img/sam.png';
+
+var player1ImgActive = new Image();
+player1ImgActive.src = '/img/sam--active.png';
+
+player1Img.onload = function() {
+  context.drawImage(player1Img, 0, 0, 50, 50);
+};
 
 function renderPlayers() {
+
+  console.log('renderPlayers');
+
+  if (players[0].x > 10) {
+    player1Img.onload = null;
+    player1Img.src = '/img/sam--active.png';
+  }
 
   playerPositionChanged = false;
   clearCanvas();
 
-  context.beginPath();
-  context.fillStyle = 'white';
-  context.fillRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), pointSize + pointMargin, pointSize + pointMargin);
+
+
+  console.log(players[0].x * (pointSize + pointMargin) - 10);
+
+  // context.beginPath();
+  // context.fillStyle = 'white';
+  // context.fillRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), pointSize + pointMargin, pointSize + pointMargin);
+  context.drawImage(player1Img, (players[0].x * (pointSize + pointMargin)), (players[0].y * (pointSize + pointMargin)), 50, 50);
 }
 
 function step(timestamp) {
 
   if (energyTransferRequired) {
     updatePoints();
-  }
-
-  if (playerPositionChanged) {
+    renderPlayers();
+  } else if (playerPositionChanged) {
     renderPlayers();
   }
 
