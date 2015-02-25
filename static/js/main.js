@@ -166,7 +166,7 @@ function clearCanvas() {
 }
 
 function clearPlayer() {
-  context.clearRect((players[0].x - 1) * (pointSize + pointMargin), (players[0].y - 1) * (pointSize + pointMargin), 50, 50);
+  context.clearRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), 50, 50);
 }
 
 function updatePoints() {
@@ -229,7 +229,7 @@ function renderPlayers() {
   }
 
   playerPositionChanged = false;
-  clearPlayer();
+
 
   // context.beginPath();
   // context.fillStyle = 'white';
@@ -334,6 +334,8 @@ socket.on('game:trigger-wave', function (data) {
 
 socket.on('game:move-player', function (data) {
   console.log('game:move-player', data);
+
+  clearPlayer();
 
   players[0].x += data.x;
   players[0].y += data.y;
