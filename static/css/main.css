@@ -28,6 +28,11 @@ body {
 .control-button--down {
   top: 200px;
 }
+.control-button--fire {
+  background: red;
+  top: 200px;
+  left: 0;
+}
 .game-screen {
   position: relative;
   width: 1920px;

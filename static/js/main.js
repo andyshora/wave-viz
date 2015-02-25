@@ -162,7 +162,11 @@ function transferScheduledEnergy() {
 }
 
 function clearCanvas() {
-  context.clearRect (0, 0, canvasWidth, canvasHeight);
+  context.clearRect(0, 0, canvasWidth, canvasHeight);
+}
+
+function clearPlayer() {
+  context.clearRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), 50, 50);
 }
 
 function updatePoints() {
@@ -225,9 +229,7 @@ function renderPlayers() {
   }
 
   playerPositionChanged = false;
-  clearCanvas();
-
-
+  clearPlayer();
 
   console.log(players[0].x * (pointSize + pointMargin) - 10);
 
