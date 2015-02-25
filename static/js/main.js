@@ -197,14 +197,19 @@ function sendRandomWave() {
   energyTransferRequired = true;
 }
 
-// start FAF loop
+// start RAF loop
 var last = 0;
 var energyTransferRequired = false;
+var playerPositionChanged = false;
 
 var players = [];
 players[0] = { x: 0, y: 0 };
 
 function renderPlayers() {
+
+  playerPositionChanged = false;
+  clearCanvas();
+
   context.beginPath();
   context.fillStyle = 'white';
   context.fillRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), pointSize + pointMargin, pointSize + pointMargin);
@@ -216,7 +221,9 @@ function step(timestamp) {
     updatePoints();
   }
 
-  renderPlayers();
+  if (playerPositionChanged) {
+    renderPlayers();
+  }
 
   window.requestAnimationFrame(step);
 }
@@ -309,6 +316,8 @@ socket.on('game:move-player', function (data) {
 
   players[0].x += data.x;
   players[0].y += data.y;
+
+  playerPositionChanged = true;
 
 });
 
