@@ -293,7 +293,7 @@ console.log('domain', domain);
 
 function initConnections() {
 
-  var socket = io(domain);
+  var socket = io.connect();
   socket.on('game:trigger-wave', function (data) {
     console.log('game:trigger-wave', data);
     sendRandomWave();
