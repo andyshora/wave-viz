@@ -36,6 +36,11 @@ app.io.route('game:trigger-wave', function(req) {
   req.io.broadcast('game:trigger-wave');
 });
 
+app.io.route('game:move-player', function(req) {
+  console.log('game:move-player', req.data);
+  req.io.broadcast('game:move-player', req.data);
+});
+
 
 /*
 io.on('connection', function (socket) {

@@ -201,11 +201,22 @@ function sendRandomWave() {
 var last = 0;
 var energyTransferRequired = false;
 
+var players = [];
+players[0] = { x: 0, y: 0 };
+
+function renderPlayers() {
+  context.beginPath();
+  context.fillStyle = 'white';
+  context.fillRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), pointSize + pointMargin, pointSize + pointMargin);
+}
+
 function step(timestamp) {
 
   if (energyTransferRequired) {
     updatePoints();
   }
+
+  renderPlayers();
 
   window.requestAnimationFrame(step);
 }
@@ -279,8 +290,6 @@ function getColor(energy) {
 
 }
 
-// init pusher for remote controls to work
-initConnections();
 
 canvas.addEventListener('touchstart', onCanvasTapped, false);
 canvas.addEventListener('mousedown', onCanvasTapped, false);
@@ -288,14 +297,19 @@ canvas.addEventListener('mousedown', onCanvasTapped, false);
 start = +new Date();
 window.requestAnimationFrame(step);
 
-var domain = /shora/ig.test(window.location.href) ? window.location.hostname : 'http://localhost/';
-console.log('domain', domain);
+var socket = io.connect();
 
-function initConnections() {
+socket.on('game:trigger-wave', function (data) {
+  console.log('game:trigger-wave', data);
+  sendRandomWave();
+});
 
-  var socket = io.connect();
-  socket.on('game:trigger-wave', function (data) {
-    console.log('game:trigger-wave', data);
-    sendRandomWave();
-  });
-}
+socket.on('game:move-player', function (data) {
+  console.log('game:move-player', data);
+
+  players[0].x += data.x;
+  players[0].y += data.y;
+
+});
+
+

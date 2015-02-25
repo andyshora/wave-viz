@@ -25,6 +25,10 @@ socket.on('connect:success', function (data) {
   initGame();
 });*/
 
+function movePlayer(x, y) {
+  console.log('movePlayer', x, y);
+  socket.emit('game:move-player', { x: x, y: y });
+}
 
 function sendWave() {
   console.log('sendWave');

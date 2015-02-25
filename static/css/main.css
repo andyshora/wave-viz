@@ -6,7 +6,27 @@ body {
   padding: 0;
   background: black;
   text-align: center;
-
+  position: relative;
+}
+.control-button {
+  background: white;
+  color: black;
+  font-size: 30px;
+  padding: 40px;
+  border: none;
+  position: absolute;
+}
+.control-button--left {
+  left: 0;
+}
+.control-button--right {
+  right: 0;
+}
+.control-button--up {
+  top: 0;
+}
+.control-button--down {
+  top: 200px;
 }
 .game-screen {
   position: relative;
