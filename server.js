@@ -5,8 +5,8 @@ var io = require('socket.io')(server);
 
 var connectedCount = 0;
 
-app.set('ipaddr', '127.0.0.1');
-app.set('port', (process.env.PORT || 8082));
+// app.set('ipaddr', '127.0.0.1');
+// app.set('port', (process.env.PORT || 8082));
 
 
 
@@ -34,6 +34,7 @@ io.on('connection', function (socket) {
 
 });
 
-server.listen(app.get('port'), '127.0.0.1');
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'));
 // app.listen(process.env.PORT || 8082);
-console.log('Listening on port %s', process.env.PORT || 8082);
+console.log('Listening on port %s', app.get('port'));
