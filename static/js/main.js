@@ -3,6 +3,8 @@ var gridSize = 100; // will create gridSize ^ 2 points
 var gridWidth = 100;
 var gridHeight = 100;
 
+var playerMarkerSize = 100;
+
 var pointSize = 9;
 var energyPropagationPerFrame = .40;
 var energyLostPerFrame = 5; // smaller = longer energy trail
@@ -165,8 +167,14 @@ function clearCanvas() {
   context.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
+/**
+ * clear the area of space the player marker was occupying
+ */
 function clearPlayer() {
-  context.clearRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), 50, 50);
+
+  for (var i = 0; i < players.length; i++) {
+    context.clearRect(players[i].x * (pointSize + pointMargin), players[i].y * (pointSize + pointMargin), playerMarkerSize, playerMarkerSize);
+  }
 }
 
 function updatePoints() {
@@ -199,6 +207,7 @@ function sendRandomWave() {
   var index = Math.floor(Math.random() * points.length);
   energyTransferQueue.push({ index: index, energy: 100 });
   energyTransferRequired = true;
+
 }
 
 // start RAF loop
@@ -209,24 +218,38 @@ var playerPositionChanged = true;
 var players = [];
 players[0] = { name: 'sam', x: 0, y: 0 };
 
-var player1Img = new Image();
-player1Img.src = '/img/sam.png';
+var playerImgs = [];
 
-var player1ImgActive = new Image();
-player1ImgActive.src = '/img/sam--active.png';
+// setup player marker images
+for (var i = 0; i < players.length; i++) {
+  playerImgs.push(new Image());
+  playerImgs[i].src = '/img/' + players[i].name + '.png';
 
-player1Img.onload = function() {
-  context.drawImage(player1Img, 0, 0, 50, 50);
-};
+  playerImgs[i].onload = function() {
+    context.drawImage(this, 0, 0, playerMarkerSize, playerMarkerSize);
+    this.onload = null;
+  };
+}
+
+function exciteAllPlayers() {
+  for (var i = 0; i < players.length; i++) {
+    excitePlayer(i);
+  }
+}
+function excitePlayer(i) {
+  console.log('excitePlayer', i);
+  playerImgs[i].src = '/img/' + players[i].name + '--active.png';
+}
+function boreAllPlayers() {
+  for (var i = 0; i < players.length; i++) {
+    borePlayer(i);
+  }
+}
+function borePlayer(i) {
+  playerImgs[i].src = '/img/' + players[i].name + '.png';
+}
 
 function renderPlayers() {
-
-  console.log('renderPlayers');
-
-  if (players[0].x > 10) {
-    player1Img.onload = null;
-    player1Img.src = '/img/sam--active.png';
-  }
 
   playerPositionChanged = false;
 
@@ -234,20 +257,13 @@ function renderPlayers() {
   // context.beginPath();
   // context.fillStyle = 'white';
   // context.fillRect(players[0].x * (pointSize + pointMargin), players[0].y * (pointSize + pointMargin), pointSize + pointMargin, pointSize + pointMargin);
-  context.drawImage(player1Img, (players[0].x * (pointSize + pointMargin)), (players[0].y * (pointSize + pointMargin)), 50, 50);
-}
 
-function step(timestamp) {
-
-  if (energyTransferRequired) {
-    updatePoints();
-    renderPlayers();
-  } else if (playerPositionChanged) {
-    renderPlayers();
+  for (var i = 0; i < players.length; i++) {
+    context.drawImage(playerImgs[i], (players[i].x * (pointSize + pointMargin)), (players[i].y * (pointSize + pointMargin)), playerMarkerSize, playerMarkerSize);
   }
 
-  window.requestAnimationFrame(step);
 }
+
 
 function drawTapMarker(x, y) {
   context.beginPath();
@@ -263,7 +279,7 @@ function onCanvasTapped(event) {
 
     var lastIndex = -1;
 
-    for (var i=0; i < touches.length; i++) {
+    for (var i = 0; i < touches.length; i++) {
       var x = touches[i].pageX;
       var y = touches[i].pageY;
 
@@ -325,6 +341,8 @@ canvas.addEventListener('mousedown', onCanvasTapped, false);
 start = +new Date();
 window.requestAnimationFrame(step);
 
+/** socket functions */
+
 var socket = io.connect();
 
 socket.on('game:trigger-wave', function (data) {
@@ -332,16 +350,50 @@ socket.on('game:trigger-wave', function (data) {
   sendRandomWave();
 });
 
+socket.on('game:send-ice', function (data) {
+  console.log('game:send-ice', data);
+  sendIce(data.playerIndex);
+});
+
 socket.on('game:move-player', function (data) {
   console.log('game:move-player', data);
 
   clearPlayer();
 
-  players[0].x += data.x;
-  players[0].y += data.y;
 
-  playerPositionChanged = true;
+  if ((players[data.playerIndex].x + data.x < 0) ||
+    (players[data.playerIndex].y + data.y < 0) ||
+    (players[data.playerIndex].x + data.x > gridWidth - 6) ||
+    (players[data.playerIndex].y + data.y > gridWidth - 6)) {
+    context.drawImage(playerImgs[data.playerIndex], (players[data.playerIndex].x * (pointSize + pointMargin)), (players[data.playerIndex].y * (pointSize + pointMargin)), playerMarkerSize, playerMarkerSize);
+
+    return;
+  } else {
+    players[data.playerIndex].x += data.x;
+    players[data.playerIndex].y += data.y;
+    playerPositionChanged = true;
+    context.drawImage(playerImgs[data.playerIndex], (players[data.playerIndex].x * (pointSize + pointMargin)), (players[data.playerIndex].y * (pointSize + pointMargin)), playerMarkerSize, playerMarkerSize);
+  }
+
+
+
 
 });
 
+/** END socket functions */
 
+function step(timestamp) {
+
+  if (energyTransferRequired) {
+    updatePoints();
+    exciteAllPlayers();
+    renderPlayers();
+  } else if (playerPositionChanged) {
+    renderPlayers();
+    boreAllPlayers();
+  } else {
+    boreAllPlayers();
+  }
+
+  window.requestAnimationFrame(step);
+}

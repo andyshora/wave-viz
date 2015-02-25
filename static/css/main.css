@@ -6,32 +6,68 @@ body {
   padding: 0;
   background: black;
   text-align: center;
-  position: relative;
+  height: 100%;
+  width: 100%;
 }
 .control-button {
-  background: white;
-  color: black;
+  color: white;
   font-size: 30px;
   padding: 10px;
   border: none;
-  position: absolute;
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  outline: 0;
+  background: black;
+  user-select: none;
+}
+.control-button:active {
+  outline: 0;
+  color: black;
+  background: pink;
+  transform: scale(.9);
+  -webkit-transform: scale(.9);
 }
 .control-button--left {
+  top: 50%;
   left: 0;
+  margin-top: -50px;
 }
 .control-button--right {
+  top: 50%;
   right: 0;
+  margin-top: -50px;
 }
 .control-button--up {
   top: 0;
+  margin-left: -50px;
 }
 .control-button--down {
-  top: 200px;
+  bottom: 0;
+  margin-left: -50px;
 }
-.control-button--fire {
-  background: red;
-  top: 200px;
+.control-button--down-left {
+  bottom: 0;
   left: 0;
+}
+.control-button--down-right {
+  bottom: 0;
+  right: 0;
+}
+.control-button--up-left {
+  top: 0;
+  left: 0;
+}
+.control-button--up-right {
+  top: 0;
+  right: 0;
+}
+.control-button--ice {
+  background: lightBlue;
+  color: white;
+  top: 50%;
+  left: 50%;
+  margin: -50px 0 0 -50px;
 }
 .game-screen {
   position: relative;

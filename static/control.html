@@ -11,12 +11,16 @@
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <button class="control-button control-button--up" onmousedown="movePlayer(0,-1)" ontouchstart="movePlayer(0,-1)">Up</button>
-  <button class="control-button control-button--left" onmousedown="movePlayer(-1,0)" ontouchstart="movePlayer(-1,0)">Left</button>
-  <button class="control-button control-button--right" onmousedown="movePlayer(1,0)" ontouchstart="movePlayer(1,0)">Right</button>
-  <button class="control-button control-button--down" onmousedown="movePlayer(0,1)" ontouchstart="movePlayer(0,1)">Down</button>
+  <button class="control-button control-button--up" onmousedown="movePlayer(0,-2)" ontouchstart="movePlayer(0,-2)">&uarr;</button>
+  <button class="control-button control-button--up-left" onmousedown="movePlayer(-2,-2)" ontouchstart="movePlayer(-2,0)">&#8598;</button>
+  <button class="control-button control-button--up-right" onmousedown="movePlayer(2,-2)" ontouchstart="movePlayer(-2,0)">&#8599;</button>
+  <button class="control-button control-button--down-left" onmousedown="movePlayer(-2,2)" ontouchstart="movePlayer(-2,0)">&#8601;</button>
+  <button class="control-button control-button--down-right" onmousedown="movePlayer(2,2)" ontouchstart="movePlayer(-2,0)">&#8600;</button>
+  <button class="control-button control-button--left" onmousedown="movePlayer(-2,0)" ontouchstart="movePlayer(-2,0)">&larr;</button>
+  <button class="control-button control-button--right" onmousedown="movePlayer(2,0)" ontouchstart="movePlayer(2,0)">&rarr;</button>
+  <button class="control-button control-button--down" onmousedown="movePlayer(0,2)" ontouchstart="movePlayer(0,2)">&darr;</button>
 
-  <button class="control-button control-button--fire" onmousedown="sendWave()" ontouchstart="sendWave()">Fire</button>
+  <button class="control-button control-button--ice" onmousedown="sendIce()" ontouchstart="sendIce()">Ice</button>
   <script src="js/config.js"></script>
   <script src="js/control.js"></script>
 </body>
