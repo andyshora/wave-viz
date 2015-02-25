@@ -6,6 +6,9 @@ body {
   padding: 0;
   background: black;
   text-align: center;
+
+}
+.game-screen {
   position: relative;
   width: 1920px;
   height: 1080px;
@@ -19,6 +22,7 @@ body {
 	border: none;
 	color: white;
 	cursor: pointer;
+  font-size: 100px;
 }
 canvas {
   background: black;
