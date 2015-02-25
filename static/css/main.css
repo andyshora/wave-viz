@@ -1,7 +1,14 @@
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   padding: 0;
   background: black;
+  text-align: center;
+  position: relative;
+  width: 1920px;
+  height: 1080px;
 }
 .update-button {
 	position: fixed;
@@ -15,6 +22,44 @@ body {
 }
 canvas {
   background: black;
+  box-sizing: ;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  position: absolute;
+  left: 50%;
+  margin-left: -500px;
+  top: 40px;
+  width: 1002px;
+  height: 1002px;
+  border: 1px solid white;
+}
+.player-zone {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  margin: 40px;
+  border: 1px solid white;
+  font-size: 100px;
+  line-height: 1;
+  text-align: center;
+}
+.player-zone--1 {
+  top: 0;
+  left: 0;
+  color: red;
+}
+.player-zone--2 {
+  top: 0;
+  right: 0;
+  color: yellow;
+}
+.player-zone--3 {
+  bottom: 0;
+  left: 0;
+  color: green;
+}
+.player-zone--4 {
+  bottom: 0;
+  right: 0;
+  color: blue;
 }

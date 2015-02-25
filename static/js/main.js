@@ -3,7 +3,7 @@ var gridSize = 100; // will create gridSize ^ 2 points
 var gridWidth = 100;
 var gridHeight = 100;
 
-var pointSize = 10;
+var pointSize = 9;
 var energyPropagationPerFrame = .40;
 var energyLostPerFrame = 5; // smaller = longer energy trail
 var pointMargin = 1;
